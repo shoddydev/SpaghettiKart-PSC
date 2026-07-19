@@ -3,6 +3,8 @@
 #include <assets/models/tracks/koopa_troopa_beach/koopa_troopa_beach_data.h>
 #include "port/interpolation/FrameInterpolation.h"
 
+extern s32 gRaceState; // Or s32, depending on how it's defined in your headers
+
 /**
  * @brief Renders the palm tree actor.
  * Actor used in Koopa Troopa Beach.
@@ -21,8 +23,15 @@ void render_actor_palm_tree(Camera* camera, UNUSED Mat4 arg1, struct PalmTree* a
         return;
     }
 
-    temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0.0f, camera->fieldOfView, 4000000.0f);
+
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0.0f, camera->fieldOfView, 200000.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1.0f, camera->fieldOfView, 800000.0f);
+    }
+
+//    temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0.0f, camera->fieldOfView, 4000000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);

@@ -46,9 +46,18 @@ ResourceFactoryBinaryTextureV0::ReadResource(std::shared_ptr<Ship::File> file,
     texture->Type = (Fast::TextureType)reader->ReadUInt32();
     texture->Width = reader->ReadUInt32();
     texture->Height = reader->ReadUInt32();
-    texture->ImageDataSize = reader->ReadUInt32();
-    texture->ImageData = new uint8_t[texture->ImageDataSize];
+texture->ImageDataSize = reader->ReadUInt32();
+    
+    // 1. Calculate a safe size with 64 bytes of "buffer" room
+    size_t paddedSize = texture->ImageDataSize + 4096; 
+    
+    // 2. Allocate the padded memory
+    texture->ImageData = new uint8_t[paddedSize];
+    
+    // 3. Clear that memory to zero (this is where memset is used)
+    memset(texture->ImageData, 0, paddedSize);
 
+    // 4. Read only the actual data from the file into the start of the buffer
     reader->Read((char*)texture->ImageData, texture->ImageDataSize);
 
     return texture;
@@ -79,11 +88,21 @@ ResourceFactoryBinaryTextureV1::ReadResource(std::shared_ptr<Ship::File> file,
     texture->Flags = reader->ReadUInt32();
     texture->HByteScale = reader->ReadFloat();
     texture->VPixelScale = reader->ReadFloat();
-    texture->ImageDataSize = reader->ReadUInt32();
-    texture->ImageData = new uint8_t[texture->ImageDataSize];
+texture->ImageDataSize = reader->ReadUInt32();
+    
+    // 1. Calculate a safe size with 64 bytes of "buffer" room
+    size_t paddedSize = texture->ImageDataSize + 4096; 
+    
+    // 2. Allocate the padded memory
+    texture->ImageData = new uint8_t[paddedSize];
+    
+    // 3. Clear that memory to zero (this is where memset is used)
+    memset(texture->ImageData, 0, paddedSize);
 
+    // 4. Read only the actual data from the file into the start of the buffer
     reader->Read((char*)texture->ImageData, texture->ImageDataSize);
 
     return texture;
 }
 } // namespace Fast
+

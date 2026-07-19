@@ -30,6 +30,8 @@
 #include "engine/Matrix.h"
 #include "port/Game.h"
 
+extern void destroy_all_actors(void);
+
 s32 D_802874A0;
 // s32 D_802874A4[5];
 
@@ -110,6 +112,10 @@ void credits_loop(void) {
         gQuitToMenuTransitionCounter--;
         if (gQuitToMenuTransitionCounter == 0) {
             gIsInQuitToMenuTransition = 0;
+            
+            // FIX: Flush the actor pool to free PS Classic RAM before credits
+            destroy_all_actors(); 
+            
             gGamestateNext = CREDITS_SEQUENCE;
             gGamestate = 255;
         }
@@ -206,3 +212,4 @@ void load_credits(void) {
     D_801625F8 = ((uintptr_t) gHeapEndPtr - gNextFreeMemoryAddress);
     D_801625FC = ((f32) D_801625F8 / 1000.0f);
 }
+

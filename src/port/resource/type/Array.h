@@ -14,10 +14,10 @@ typedef union ScalarData {
     int16_t s16;
     uint32_t u32;
     int32_t s32;
-    uint64_t u64;
-    int64_t s64;
+    // uint64_t u64; // Commented out for 32-bit stability
+    // int64_t s64;  // Commented out for 32-bit stability
     float f32;
-    double f64;
+    // double f64;   // Commented out for 32-bit stability
 } ScalarData;
 
 enum class ScalarType {

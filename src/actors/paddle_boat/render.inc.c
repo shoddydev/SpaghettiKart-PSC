@@ -29,8 +29,18 @@ void render_actor_paddle_boat(Camera* camera, struct PaddleWheelBoat* boat, UNUS
         return;
     }
 
-    temp = is_within_render_distance(camera->pos, boat->pos, camera->rot[1], 90000.0f, camera->fieldOfView,
-                                     9000000.0f);
+
+
+    if (gRaceState >= 4) {
+        temp = is_within_render_distance(camera->pos, boat->pos, camera->rot[1], 0.0f, camera->fieldOfView, 0.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp = is_within_render_distance(camera->pos, boat->pos, camera->rot[1], 90000.0f, camera->fieldOfView, 1500000.0f);
+    }
+
+
+
+//    temp = is_within_render_distance(camera->pos, boat->pos, camera->rot[1], 90000.0f, camera->fieldOfView, 9000000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp = MAX(temp, 0.0f);

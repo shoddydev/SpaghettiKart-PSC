@@ -1619,6 +1619,15 @@ void render_player(Player* player, s8 playerId, s8 screenId) {
     if (player->boostPower >= 2.0f) {
         func_80025DE8(player, playerId, screenId, var_v1);
     }
+
+    // Allows wheels to spin - Disabled during demo loops using the u16 from main.h
+    if (gDemoMode == 0) { 
+        if (gDisplayListHead != NULL && sKartTexture != NULL && sKartTexture[0] != '\0') {
+            if (GameEngine_ResourceGetTexTypeByName(sKartTexture) != 1) { 
+                gSPInvalidateTexCache(gDisplayListHead++, sKartTexture);
+            }
+        }
+    }
 }
 
 void func_80026A48(Player* player, s8 arg1) {
@@ -1730,3 +1739,5 @@ UNUSED void func_8002701C(void) {
 
 UNUSED void func_80027024(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
 }
+
+

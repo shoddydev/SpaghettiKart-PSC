@@ -12,11 +12,11 @@ enum {
 };
 
 typedef struct {
-    /* 0x00 */ s16 x;
-    /* 0x02 */ s16 y;
-    /* 0x04 */ s16 z;
-    /* 0x06 */ u16 trackSectionId;
-} TrackPathPoint; // size = 0x08
+    s16 x;
+    s16 y;
+    s16 z;
+    u16 trackSectionId;
+} __attribute__((packed)) TrackPathPoint;
 
 /**
  * These are per-path arrays that contain some information relating to path
@@ -96,3 +96,4 @@ extern s16 cpu_exitingPathIntersection[];
 extern s16 bInMultiPathSection[];
 
 #endif
+

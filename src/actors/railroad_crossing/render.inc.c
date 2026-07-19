@@ -13,8 +13,8 @@
 void render_actor_railroad_crossing(Camera* camera, struct RailroadCrossing* rr_crossing) {
     UNUSED Vec3s sp80 = { 0, 0, 0 };
     Mat4 sp40;
-    f32 unk = is_within_render_distance(camera->pos, rr_crossing->pos, camera->rot[1], 0.0f, camera->fieldOfView,
-                                        4000000.0f);
+    f32 unk = is_within_render_distance(camera->pos, rr_crossing->pos, camera->rot[1], 1.0f, camera->fieldOfView,
+                                        700000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         unk = MAX(unk, 0.0f);

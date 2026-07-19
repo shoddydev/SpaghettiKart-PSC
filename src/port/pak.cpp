@@ -1,12 +1,10 @@
 #include <filesystem>
 #include <fstream>
-#if __has_include(<fmt/format.h>)
-#include <fmt/format.h>
-#define fmt(...) fmt::format(__VA_ARGS__)
-#else
-#include <format>
-#define fmt(...) std::format(__VA_ARGS__)
-#endif
+#include <sstream> // Add this for string building
+#include <string>
+
+// Remove the whole #if / #else / #endif block for format
+// We will handle the formatting manually below.
 
 #include <libultraship.h>
 #include <libultraship/libultra.h>
@@ -22,8 +20,11 @@ typedef struct ControllerPak {
     FILE* file;
 } ControllerPak;
 
+// Rewrite this function to use stringstream instead of fmt()
 std::string Pfs_PakFile_GetPath(u8 file_no) {
-    return Ship::Context::GetPathRelativeToAppDirectory(fmt("controllerPak_file_{}.sav", file_no));
+    std::stringstream ss;
+    ss << "controllerPak_file_" << (int)file_no << ".sav";
+    return Ship::Context::GetPathRelativeToAppDirectory(ss.str());
 }
 
 std::string Pfs_PakHeader_GetPath() {

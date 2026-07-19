@@ -19,8 +19,18 @@ void render_actor_train_engine(Camera* camera, struct TrainCar* actor) {
     Mat4 objectMtx;
     Mat4 resultMtx;
 
-    f32 distance = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 2500.0f,
-                                             camera->fieldOfView, 9000000.0f);
+    f32 distance;
+
+    // THE TRAIN CULLER
+    // Standard distance is 9,000,000 (huge!). 
+    // We drop it to 800,000 for the results screen.
+    if (gRaceState >= 4) {
+        distance = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 0.0f,
+                                             camera->fieldOfView, 0.0f);
+    } else {
+        distance = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 2500.0f,
+                                             camera->fieldOfView, 1500000.0f);
+    }
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         distance = MAX(distance, 0.0f);
@@ -174,8 +184,16 @@ void render_actor_train_tender(Camera* camera, struct TrainCar* actor) {
     Mat4 spE0;
     Mat4 spA0;
 
-    f32 temp_f0 = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 625.0f,
-                                            camera->fieldOfView, 9000000.0f);
+    f32 temp_f0;
+
+    // THE TENDER CULLER
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 0.0f,
+                                             camera->fieldOfView, 0.0f);
+    } else {
+        temp_f0 = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 1.0f,
+                                             camera->fieldOfView, 1500000.0f);
+    }
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -201,9 +219,9 @@ void render_actor_train_tender(Camera* camera, struct TrainCar* actor) {
         gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_1F228);
 
     } else if (temp_f0 < 1000000.0f) {
-        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_1F708);
+        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_1F228);
     } else {
-        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_1FAF8);
+        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_1F228);;
     }
     if (1440000.0f < temp_f0) {
         return;
@@ -267,8 +285,16 @@ void render_actor_train_passenger_car(Camera* camera, struct TrainCar* actor) {
     Mat4 spE0;
     Mat4 spA0;
 
-    f32 temp_f0 = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 2025.0f,
-                                            camera->fieldOfView, 9000000.0f);
+    f32 temp_f0;
+
+    // THE PASSENGER CAR CULLER
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 0.0f,
+                                             camera->fieldOfView, 0.0f);
+    } else {
+        temp_f0 = is_within_render_distance(camera->pos, actor->pos, camera->rot[1], 1.0f,
+                                             camera->fieldOfView, 1500000.0f);
+    }
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -297,11 +323,11 @@ void render_actor_train_passenger_car(Camera* camera, struct TrainCar* actor) {
 
     } else if (temp_f0 < 1000000.0f) {
 
-        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_21550);
-        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_21220);
+        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_20A20);
+        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_20A08);
     } else {
-        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_21C90);
-        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_21A80);
+        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_20A20);
+        gSPDisplayList(gDisplayListHead++, d_course_kalimari_desert_dl_20A08);
     }
     if (1440000.0f < temp_f0) {
         return;

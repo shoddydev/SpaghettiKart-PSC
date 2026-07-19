@@ -215,9 +215,14 @@ void setup_race(void) {
         gNextFreeMemoryAddress = gFreeMemoryResetAnchor;
         load_track(gCurrentCourseId);
         gFreeMemoryCourseAnchor = gNextFreeMemoryAddress;
-    } else {
+} else {
+    /* * ONLY reset to the CourseAnchor if we are actually 
+     * restarting the race from scratch, not just updating.
+     */
+    if (gRaceState == RACE_INIT) {
         gNextFreeMemoryAddress = gFreeMemoryCourseAnchor;
     }
+}
 
     // Cow related
     D_8015F702 = 0;

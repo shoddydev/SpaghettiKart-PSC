@@ -3473,27 +3473,49 @@ void clear_path_point(TrackPathPoint* arg0, size_t size) {
 
 // Appears to allocate memory for each track.
 void init_course_path_point(void) {
+    // INSERT THIS LINE HERE:
+    printf("[DEBUG] TrackPathPoint Size: %zu bytes\n", sizeof(TrackPathPoint));
 
     TrackPathSizes* ptr = &CM_GetProps()->PathSizes;
     s32 temp;
     s32 i;
+
+    // ADD THIS LINE FIRST:
+    printf("[DEBUG] TrackPathPoint Size: %zu bytes\n", sizeof(TrackPathPoint));
 
     D_80163368[0] = (s32) ptr->unk0;
     D_80163368[1] = (s32) ptr->unk2;
     D_80163368[2] = (s32) ptr->unk4;
     D_80163368[3] = (s32) ptr->unk6;
 
+    // ADD THIS TO CHECK FRAEZE DATA:
+    printf("[DEBUG] Snowland Path Points: %d, %d, %d, %d\n", 
+            D_80163368[0], D_80163368[1], D_80163368[2], D_80163368[3]);
+
     temp = ptr->unk8;
     gVehicle2DPathPoint = get_next_available_memory_addr(temp * sizeof(TrackPathPoint));
     gVehiclePath = gVehicle2DPathPoint;
 
-    // Podium ceremony appears to allocate 1 * 8 bytes of data. Which would be aligned to 0x10.
+// Podium ceremony appears to allocate 1 * 8 bytes of data. Which would be aligned to 0x10.
     for (i = 0; i < 4; i++) {
+        // FORCE ALIGNMENT BEFORE EACH ALLOCATION FOR ARM STABILITY
+        gNextFreeMemoryAddress = (gNextFreeMemoryAddress + 7) & ~7; 
         gTrackPaths[i] = get_next_available_memory_addr(D_80163368[i] * sizeof(TrackPathPoint));
+
+        gNextFreeMemoryAddress = (gNextFreeMemoryAddress + 7) & ~7; 
         gTrackLeftPaths[i] = get_next_available_memory_addr(D_80163368[i] * sizeof(TrackPathPoint));
+
+        gNextFreeMemoryAddress = (gNextFreeMemoryAddress + 7) & ~7; 
         gTrackRightPaths[i] = get_next_available_memory_addr(D_80163368[i] * sizeof(TrackPathPoint));
+
+        // These are 2-byte aligned usually, so just to be safe:
+        gNextFreeMemoryAddress = (gNextFreeMemoryAddress + 1) & ~1;
         gTrackSectionTypes[i] = get_next_available_memory_addr(D_80163368[i] * 2);
+        
+        gNextFreeMemoryAddress = (gNextFreeMemoryAddress + 1) & ~1;
         gPathExpectedRotation[i] = get_next_available_memory_addr(D_80163368[i] * 2);
+        
+        gNextFreeMemoryAddress = (gNextFreeMemoryAddress + 1) & ~1;
         gTrackConsecutiveCurveCounts[i] = get_next_available_memory_addr(D_80163368[i] * 2);
     }
 
@@ -7956,3 +7978,5 @@ UNUSED void func_8001C42C(void) {
         func_80057CE4();
     }
 }
+
+

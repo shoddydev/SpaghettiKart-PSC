@@ -7,11 +7,11 @@
 #include <assets/textures/other_textures.h>
 #include "animation.h"
 
-typedef struct {
-    const char* addr;      // segmented address texture file
-    u32 file_size; // compressed file size
-    u32 data_size; // uncompressed texture size
-    u32 padding;   // always zero
+typedef struct __attribute__((packed)) {
+    const char* addr;    // Texture address (4 bytes on PSC)
+    u32 file_size;       // 4 bytes
+    u32 data_size;       // 4 bytes
+    u32 padding;         // 4 bytes
 } course_texture;
 
 extern uintptr_t d_course_sherbet_land_unk_data1[];

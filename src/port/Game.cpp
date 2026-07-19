@@ -366,7 +366,7 @@ void CM_DrawStaticMeshActors() {
 void CM_BeginPlay() {
     static bool tour = false;
     auto track = GetWorld()->GetTrack();
-    GetWorld()->Actors.clear();
+    GetWorld()->CleanActors();
     
     if (nullptr == track) {
         return; 
@@ -669,6 +669,14 @@ void CM_SpawnStarterLakitu() {
     }
 
     for (size_t i = 0; i < gPlayerCountSelection1; i++) {
+        // Retry does not respawn actors, therefore, re-use lakitu.
+        if (auto it = GetWorld()->Lakitus.find(i); it != GetWorld()->Lakitus.end()) {
+            if (it->second) {
+                it->second->Activate(OLakitu::STARTER);
+            }
+            continue; // Already exists, skip spawning
+        }
+
         auto lakitu = std::make_unique<OLakitu>(i, OLakitu::LakituType::STARTER);
         GetWorld()->Lakitus[i] = lakitu.get();
         GetWorld()->AddObject(std::move(lakitu));
@@ -985,3 +993,4 @@ extern "C"
     GameEngine::Instance->Destroy();
     return 0;
 }
+

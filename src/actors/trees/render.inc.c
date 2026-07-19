@@ -7,6 +7,9 @@
 #include <assets/models/tracks/kalimari_desert/kalimari_desert_data.h>
 #include <assets/models/tracks/bowsers_castle/bowsers_castle_data.h>
 
+extern s32 gRaceState; // Or s32, depending on how it's defined in your headers
+
+
 /**
  * @brief Renders the tree actor in Mario rawceay.
  *
@@ -22,8 +25,18 @@ void render_actor_tree_mario_raceway(Camera* camera, Mat4 arg1, struct Actor* ar
         return;
     }
 
-    temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView,
-                                        16000000.0f);
+
+
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 350000.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 3000000.0f);
+    }
+
+
+
+//    temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 16000000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -139,8 +152,13 @@ void render_actor_tree_moo_moo_farm(Camera* camera, Mat4 arg1, struct Actor* arg
         return;
     }
 
-    temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 6250000.0f);
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 0.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 2000000.0f);
+    }
+
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -171,30 +189,41 @@ void render_actor_tree_luigi_raceway(Camera* camera, Mat4 arg1, struct Actor* ar
         return;
     }
 
-    temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 4000000.0f);
+    // THE ECO-MODE SWITCH
+    // If the race is over (State 4+), we aggressively cull distant trees
+    // to save the PowerVR from handling unnecessary draw calls.
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 0.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 1300000.0f);
+    }
 
+    // Bypass culling if the Cheat Variable is set
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
     }
 
+    // If outside the chosen max distance, stop here
     if (temp_f0 < 0.0f) {
         return;
     }
 
+    // Sprite animation check
     if (((temp_v0 & 0x400) == 0) && (temp_f0 < 250000.0f)) {
         func_8029794C(arg2->pos, arg2->rot, 2.79999995f);
     }
+
+    // Matrix translation
     arg1[3][0] = arg2->pos[0];
     arg1[3][1] = arg2->pos[1];
     arg1[3][2] = arg2->pos[2];
 
     if (render_set_position(arg1, 0) != 0) {
+        // Load the tree palette
         gDPLoadTLUT_pal256(gDisplayListHead++, common_tlut_trees_import);
-        // Why is a TLUT being used a DL here? That makes no sense
-        // Based on the TLUT being loaded above, this ought to be be another
-        // tree related DL, presumably one found in a track other than Moo Moo farm
-        //                                 0x0600FC70
+        
+        // Render the actual tree geometry (0x0600FC70)
         gSPDisplayList(gDisplayListHead++, d_course_luigi_raceway_dl_FC70);
     }
 }
@@ -293,7 +322,7 @@ void render_actor_tree_frappe_snowland(Camera* camera, Mat4 arg1, struct Actor* 
     }
 
     temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 4000000.0f);
+        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 4000000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -330,8 +359,19 @@ void render_actor_tree_cactus1_kalimari_desert(Camera* camera, Mat4 arg1, struct
         return;
     }
 
-    temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 4000000.0f);
+
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 0.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 750000.0f);
+    }
+
+
+
+
+
+//    temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 750000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -368,8 +408,19 @@ void render_actor_tree_cactus2_kalimari_desert(Camera* camera, Mat4 arg1, struct
         return;
     }
 
-    temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 4000000.0f);
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 0.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 750000.0f);
+    }
+
+
+
+
+
+
+//    temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 750000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
@@ -407,7 +458,7 @@ void render_actor_tree_cactus3_kalimari_desert(Camera* camera, Mat4 arg1, struct
     }
 
     temp_f0 =
-        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 4000000.0f);
+        is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 750000.0f);
 
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);

@@ -15,8 +15,17 @@ void render_actor_car(Camera* camera, struct Actor* arg1) {
     UNUSED s32 pad[6];
     Mat4 spC8;
     UNUSED s32 pad2[32];
-    f32 temp_f0 =
-        is_within_render_distance(camera->pos, arg1->pos, camera->rot[1], 2500.0f, camera->fieldOfView, 9000000.0f);
+    f32 temp_f0;
+
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg1->pos, camera->rot[1], 2500.0f, camera->fieldOfView, 490000.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, arg1->pos, camera->rot[1], 2500.0f, camera->fieldOfView, 1490000.0f);
+    }
+
+
+//    f32 temp_f0 = is_within_render_distance(camera->pos, arg1->pos, camera->rot[1], 2500.0f, camera->fieldOfView, 1490000.0f);
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = MAX(temp_f0, 0.0f);
     }

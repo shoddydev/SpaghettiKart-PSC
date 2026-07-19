@@ -34,7 +34,7 @@ static const std::unordered_map<int32_t, const char*> menuThemeOptions = {
 };
 
 static const std::unordered_map<int32_t, const char*> introBehaviourOptions = {
-    { 0, "Both" },
+    { 0, "Optimized" },
     { 1, "Authentic" },
     { 2, "Start Menu" },
     { 3, "Main Menu" },

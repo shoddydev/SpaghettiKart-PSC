@@ -352,6 +352,7 @@ void GameEngine::Create() {
 #if defined(__SWITCH__) || defined(__WIIU__)
     CVarRegisterInteger("gControlNav", 1); // always enable controller nav on switch/wii u
 #endif
+    CVarRegisterInteger("gControlNav", 1); 
 }
 
 void GameEngine::Destroy() {

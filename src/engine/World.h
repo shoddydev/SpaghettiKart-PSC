@@ -103,6 +103,7 @@ public:
 
     World* GetWorld(void);
     void CleanWorld(void);
+    void CleanActors(void);
 
     // getter/setter for current track
     Track* GetTrack() {
@@ -133,3 +134,4 @@ public:
 private:
     std::unique_ptr<RaceManager> RaceManagerInstance;
 };
+

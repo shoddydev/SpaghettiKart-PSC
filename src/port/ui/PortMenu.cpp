@@ -312,13 +312,17 @@ void PortMenu::AddSettings() {
     AddWidget(path, "Enable Vsync", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_VSYNC_ENABLED)
         .PreFunc([](WidgetInfo& info) { info.isHidden = mPortMenu->disabledMap.at(DISABLE_FOR_NO_VSYNC).active; })
-        .Options(CheckboxOptions().Tooltip("Enables Vsync."));
+        .Options(CheckboxOptions()
+                     .Tooltip("Enables Vsync.")
+                     .DefaultValue(false)); // <--- Add this line
     AddWidget(path, "Windowed Fullscreen", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_SDL_WINDOWED_FULLSCREEN)
         .PreFunc([](WidgetInfo& info) {
             info.isHidden = mPortMenu->disabledMap.at(DISABLE_FOR_NO_WINDOWED_FULLSCREEN).active;
         })
-        .Options(CheckboxOptions().Tooltip("Enables Windowed Fullscreen Mode."));
+        .Options(CheckboxOptions()
+                     .Tooltip("Enables Windowed Fullscreen Mode.")
+                     .DefaultValue(true)); // <--- Added this to default to ON
     AddWidget(path, "Allow multiple ImGui windows", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_ENABLE_MULTI_VIEWPORTS)
         .PreFunc(
@@ -328,7 +332,10 @@ void PortMenu::AddSettings() {
                      .DefaultValue(true));
     AddWidget(path, "Texture Filter (Needs reload)", WIDGET_CVAR_COMBOBOX)
         .CVar(CVAR_TEXTURE_FILTER)
-        .Options(ComboboxOptions().Tooltip("Sets the applied Texture Filtering.").ComboMap(textureFilteringMap));
+        .Options(ComboboxOptions()
+                     .Tooltip("Sets the applied Texture Filtering.")
+                     .ComboMap(textureFilteringMap)
+                     .DefaultIndex(1));
 
     path.sidebarName = "Controls";
     AddSidebarEntry("Settings", "Controls", 1);

@@ -3,6 +3,8 @@
 #include <macros.h>
 #include "port/interpolation/FrameInterpolation.h"
 
+extern s32 gRaceState; // Or s32, depending on how it's defined in your headers
+
 /**
  * @brief Renders the item box actor.
  *
@@ -30,8 +32,21 @@ void render_actor_item_box(Camera* camera, struct ItemBox* item_box) {
     // @port: Tag the transform.
     FrameInterpolation_RecordOpenChild("ItemBox", TAG_ITEM_ADDR(item_box));
 
-    temp_f0 = is_within_render_distance(camera->pos, item_box->pos, camera->rot[1], 0.0f, camera->fieldOfView,
-                                        4000000.0f);
+
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, item_box->pos, camera->rot[1], 1.0f, camera->fieldOfView, 400000.0f);
+    } else {
+        // Standard high-distance rendering while actively racing
+        temp_f0 = is_within_render_distance(camera->pos, item_box->pos, camera->rot[1], 1.0f, camera->fieldOfView, 700000.0f);
+    }
+
+
+
+
+    // STOCK METHOD FIX: 
+    // Changed parameter 4 (minDistance) from 0.0f to 400000.0f
+//    temp_f0 = is_within_render_distance(camera->pos, item_box->pos, camera->rot[1], 1.0f, camera->fieldOfView, 600000.0f);
+
     if (CVarGetInteger("gNoCulling", 0) == 1) {
         temp_f0 = CLAMP(temp_f0, 0.0f, 600000.0f);
     }

@@ -54,35 +54,27 @@ s32 func_80290C20(Camera* camera) {
 }
 
 void parse_track_displaylists(TrackSections* asset) {
-    TrackSections* section = (TrackSections*) asset;
+    if (asset == NULL) {
+        return;
+    }
 
-    while (section->crc != 0) {
-        if (section->clip & 0x8000) {
-            D_8015F59C = 1;
-        } else {
-            D_8015F59C = 0;
-        }
-        if (section->clip & 0x2000) {
-            D_8015F5A0 = 1;
-        } else {
-            D_8015F5A0 = 0;
-        }
-        if (section->clip & 0x4000) {
-            D_8015F5A4 = 1;
-        } else {
-            D_8015F5A4 = 0;
-        }
-        // char* name = ResourceGetNameByCrc(section->crc);
-        // printf("Generating collision mesh for section %d: %s\n", section->sectionId, name != NULL ? name :
-        // "Unknown");
+    TrackSections* section = asset;
+    int safety_counter = 0;
+
+    while (section->crc != 0 && safety_counter < 500) {
         void* addr = ResourceGetDataByCrc(section->crc);
+        
+        // Fallback for TestTrack/Battle styles (Direct Pointer)
         if (addr == NULL) {
-            printf("Warning: Could not find resource for section %d with crc 0x%llX\n", section->sectionId,
-                   section->crc);
-            addr = (void*) section->crc;
+            addr = (void*)(uintptr_t)section->crc;
         }
-        generate_collision_mesh(addr, section->surfaceType, section->sectionId);
+
+        if (addr != NULL) {
+            generate_collision_mesh(addr, section->surfaceType, section->sectionId);
+        }
+
         section++;
+        safety_counter++;
     }
 }
 
@@ -277,3 +269,4 @@ void func_80295D6C(void) {
     D_8015F6F4 = 3000;
     D_8015F6F6 = -3000;
 }
+

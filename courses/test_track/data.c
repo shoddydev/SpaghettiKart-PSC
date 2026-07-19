@@ -68,7 +68,23 @@ TrackPathPoint test_track_path[] = {
     { -32768, -32768, -32768, 0 } // Terminator
 };
 
-TrackSections test_track_addr[] = {
-    { mario_Plane_001_mesh, 255, 255, 0x0000 },
-    { 0x00000000, 0, 0, 0x00000 },
-};
+// Custom track section mapping for Test Track
+// Define it empty first so it's a "constant" the C compiler likes
+// 1. Move the variable ABOVE the function
+TrackSections test_track_addr[2] = { 0 };
+
+// 2. Now the function can find it
+void InitTestTrackData() {
+    test_track_addr[0].crc = (uintptr_t)mario_Plane_001_mesh;
+    test_track_addr[0].surfaceType = 255;
+    test_track_addr[0].sectionId = 255;
+    test_track_addr[0].clip = 0;
+    test_track_addr[0].layer = 0;
+
+    // Fixed for Vec3f being an array float[3]
+    test_track_addr[0].location[0] = 0.0f; 
+    test_track_addr[0].location[1] = 0.0f; 
+    test_track_addr[0].location[2] = 0.0f; 
+
+    test_track_addr[1].crc = 0;
+}

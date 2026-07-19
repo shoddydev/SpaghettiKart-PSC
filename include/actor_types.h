@@ -134,6 +134,7 @@ struct Actor {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Fix base size to 0x70
 }; // size = 0x70
 
 // Duplicate declare for simplicity when externing actors & packed files.
@@ -159,21 +160,23 @@ struct TrainCar {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Fix specialized size to 0x70
 }; // size = 0x70
 
 struct RailroadCrossing {
     /* 0x00 */ s16 type;
     /* 0x02 */ s16 flags;
     /* 0x04 */ s16 someTimer;
-    /* 0x06 */ s16 crossingId; // unused now
-    /* 0x08 */ void* crossingTrigger; // Crossing Trigger Class
+    /* 0x06 */ s16 crossingId; 
+    /* 0x08 */ void* crossingTrigger; 
     /* 0x10 */ Vec3s rot;
     /* 0x16 */ s16 unk_16;
     /* 0x18 */ Vec3f pos;
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+    /* NEW */  char psc_padding[8]; // Add 8 bytes to compensate for 32-bit pointers
+}; // size should now = 0x70
 
 // crossingTrigger might ruin struct size when compiled on 32 bit
 static_assert(sizeof(struct RailroadCrossing) == sizeof(struct Actor), "RailroadCrossing struct size does not match base struct size");
@@ -191,7 +194,8 @@ struct FallingRock {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+    char psc_padding[4]; // FallingRock only has one pointer, so it needs 4 bytes
+};
 
 struct ActorSpawnData {
     /* 0x00 */ Vec3s pos;
@@ -236,7 +240,8 @@ struct YoshiValleyEgg {
     /* 0x24 */ Vec3f pathCenter;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+               char psc_padding[4]; // Add 4 bytes to reach 0x70
+};
 
 struct KiwanoFruit {
     /* 0x00 */ s16 type;
@@ -255,7 +260,8 @@ struct KiwanoFruit {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+               char psc_padding[4]; // Add 4 bytes to reach 0x70
+};
 
 struct PaddleWheelBoat {
     /* 0x00 */ s16 type;
@@ -270,7 +276,8 @@ struct PaddleWheelBoat {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+               char psc_pad[4]; // Fix for 32-bit
+};
 
 struct PiranhaPlant {
     /* 0x00 */ s16 type;
@@ -283,7 +290,8 @@ struct PiranhaPlant {
     /* 0x2C */ f32 unk_02C;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+               char psc_pad[4]; // Fix for 32-bit
+};
 
 struct PalmTree {
     /* 0x00 */ s16 type;
@@ -298,7 +306,8 @@ struct PalmTree {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
-}; // size = 0x70
+               char psc_pad[4]; // Fix for 32-bit
+};
 
 typedef struct {
     /* 0x00 */ s16 type;
@@ -315,7 +324,8 @@ typedef struct {
     /* 0x24 */ Vec3f shellIndices; // Indices in gActorList for the shells "owned" by this parent
     /* 0x30 */ Collision unk30;
                const char* model;
-} TripleShellParent; // size = 0x70
+               char psc_pad[4]; // Fix for 32-bit
+} TripleShellParent;
 
 struct ShellActor {
     /* 0x00 */ s16 type;
@@ -343,8 +353,8 @@ struct ShellActor {
     /* 0x24 */ Vec3f velocity; // All 0 until the shell is fired
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Manual 4-byte fix for 32-bit
 }; // size = 0x70
-
 struct ItemBox {
     /* 0x00 */ s16 type;
     /* 0x02 */ s16 flags;
@@ -362,8 +372,8 @@ struct ItemBox {
     /* 0x2C */ f32 unk_02C;
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Manual 4-byte fix for 32-bit
 }; // size = 0x70
-
 struct FakeItemBox {
     /* 0x00 */ s16 type;
     /* 0x02 */ s16 flags;
@@ -379,6 +389,7 @@ struct FakeItemBox {
     /* 0x2C */ f32 unk_02C;
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Manual 4-byte fix
 }; // size = 0x70
 
 struct BananaBunchParent {
@@ -395,6 +406,7 @@ struct BananaBunchParent {
     /* 0x20 */ f32 unk_20[4];
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Manual 4-byte fix
 }; // size = 0x70
 
 struct BananaActor {
@@ -418,6 +430,7 @@ struct BananaActor {
     /* 0x24 */ Vec3f velocity;
     /* 0x30 */ Collision unk30;
                const char* model;
+               char psc_pad[4]; // Manual 4-byte fix
 }; // size = 0x70
 
 // #pragma GCC diagnostic pop

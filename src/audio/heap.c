@@ -391,7 +391,7 @@ void* alloc_bank_or_seq(struct SoundMultiPool* arg0, s32 arg1, s32 size, s32 arg
         pool = &arg0->temporary.pool;
         if (tp->entries[tp->nextSide].id != (s8) -1) {
             table[tp->entries[tp->nextSide].id] = SOUND_LOAD_STATUS_NOT_LOADED;
-            if (isSound == true) {
+            if (isSound == 0 || isSound == 1) {
                 discard_bank(tp->entries[tp->nextSide].id);
             }
         }
@@ -417,7 +417,7 @@ void* alloc_bank_or_seq(struct SoundMultiPool* arg0, s32 arg1, s32 size, s32 arg
                 ret = tp->entries[0].ptr;
                 break;
             case 1:
-                tp->entries[1].ptr = pool->start + pool->size - size - 0x10;
+                tp->entries[1].ptr = (u8*)ALIGN16((uintptr_t)(pool->start + pool->size - size));
                 tp->entries[1].id = (s16) id;
                 tp->entries[1].size = (u32) size;
                 if ((u32) tp->entries[1].ptr < (u32) pool->cur) {
@@ -770,3 +770,5 @@ void func_800BA8B0(s32 poolIdx, s32 id) {
         }
     }
 }
+
+

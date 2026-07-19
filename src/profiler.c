@@ -48,36 +48,30 @@ void profiler_log_vblank_time(void) {
 // Draw the specified profiler given the information passed.
 // This function is the same as the one in SM64
 void draw_profiler_bar(OSTime clockBase, OSTime clockStart, OSTime clockEnd, s16 posY, u16 color) {
-    s64 durationStart, durationEnd;
+    s32 durationStart, durationEnd; // Changed from s64 to s32
     s32 rectX1, rectX2;
 
-    // set the duration to start, and floor to 0 if the result is below 0.
-    if ((durationStart = clockStart - clockBase) < 0) {
-        durationStart = 0;
-    }
-    // like the above, but with end.
-    if ((durationEnd = clockEnd - clockBase) < 0) {
-        durationEnd = 0;
-    }
+    // Calculate durations as 32-bit integers
+    durationStart = (s32)(clockStart - clockBase);
+    durationEnd = (s32)(clockEnd - clockBase);
 
-    // calculate the x coordinates of where start and end begins, respectively.
-    rectX1 = ((((durationStart * 1000000) / osClockRate * 3) / 1000) + 30);
-    rectX2 = ((((durationEnd * 1000000) / osClockRate * 3) / 1000) + 30);
+    // Floor to 0 if negative
+    if (durationStart < 0) durationStart = 0;
+    if (durationEnd < 0) durationEnd = 0;
 
-    //! I believe this is supposed to cap rectX1 and rectX2 to 320, but the
-    //  code seems to use the wrong variables... it's possible that the variable
-    //  names were very similar within a single letter.
-    if (rectX1 > 319) {
-        clockStart = 319;
-    }
-    if (rectX2 > 319) {
-        clockEnd = 319;
-    }
+    // calculate the x coordinates
+    // We use (s32) math here because PSC doesn't need s64 for 320 pixels
+    rectX1 = ((((durationStart * 1000) / (s32)(osClockRate / 1000) * 3) / 1000) + 30);
+    rectX2 = ((((durationEnd * 1000) / (s32)(osClockRate / 1000) * 3) / 1000) + 30);
 
-    // perform the render if start is less than end. in most cases, it should be.
+    // FIX: Cap the actual PIXELS (rectX), not the clock time
+    if (rectX1 > 319) rectX1 = 319;
+    if (rectX2 > 319) rectX2 = 319;
+
+    // perform the render
     if (rectX1 < rectX2) {
         gDPPipeSync(gDisplayListHead++);
-        gDPSetFillColor(gDisplayListHead++, color << 16 | color);
+        gDPSetFillColor(gDisplayListHead++, (u32)color << 16 | color);
         gDPFillRectangle(gDisplayListHead++, rectX1, posY, rectX2, posY + 2);
     }
 }

@@ -13,12 +13,21 @@
  * @param arg2
  */
 void render_actor_cow(Camera* camera, Mat4 arg1, struct Actor* arg2) {
-    if (is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView,
-                                  4000000.0f) < 0 &&
-        CVarGetInteger("gNoCulling", 0) == 0) {
+    f32 temp_f0;
+
+    // THE COW CULLER: Break the one-liner to inject our distance logic
+    if (gRaceState >= 4) {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 0, camera->fieldOfView, 0.0f);
+    } else {
+        temp_f0 = is_within_render_distance(camera->pos, arg2->pos, camera->rot[1], 1, camera->fieldOfView, 1000000.0f);
+    }
+
+    // Check if we should cull based on the distance result
+    if (temp_f0 < 0 && CVarGetInteger("gNoCulling", 0) == 0) {
         return;
     }
 
+    // @port: Tag the transform.
     FrameInterpolation_RecordOpenChild("render_actor_cow", TAG_OBJECT(((uintptr_t)arg2 << 5) | camera->cameraId));
 
     arg1[3][0] = arg2->pos[0];

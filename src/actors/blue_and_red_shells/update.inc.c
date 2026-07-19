@@ -122,7 +122,7 @@ void func_802B3E7C(struct ShellActor* shell, Player* player) {
     x_velocity -= shell->pos[0];
     z_velocity = player->pos[2];
     z_velocity -= shell->pos[2];
-    xz_dist = sqrtf((x_velocity * x_velocity) + (z_velocity * z_velocity)) / 8;
+    xz_dist = sqrtf((x_velocity * x_velocity) + (z_velocity * z_velocity)) * 0.125f;
     if (xz_dist == 0.0f) {
         x_velocity = 0.0f;
         z_velocity = 0.0f;
@@ -178,7 +178,7 @@ s16 func_802B3FD0(Player* owner, struct ShellActor* shell) {
         playerToShellDistance = func_802B51E8(player->pos, shell->pos);
         if (playerToShellDistance < smallestDistance) {
             smallestDistance = playerToShellDistance;
-            playerId = player - gPlayerOne;
+            playerId = playerIndex;
         }
     }
 
@@ -191,8 +191,7 @@ void func_802B4104(struct ShellActor* shell) {
         destroy_destructable_actor((struct Actor*) shell);
         func_800C98B8(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
         shell->flags |= 0x80;
-    } else if ((shell->unk30.surfaceDistance[1] < 0.0f) &&
-               ((shell->unk30.unk54[1] < 0.25f) || (shell->unk30.unk54[1] < -0.25f))) {
+    } else if ((shell->unk30.surfaceDistance[1] < 0.0f) && ((shell->unk30.unk54[1] < 0.25f) && (shell->unk30.unk54[1] > -0.25f))) {
         destroy_destructable_actor((struct Actor*) shell);
         func_800C98B8(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
         shell->flags |= 0x80;
@@ -238,8 +237,7 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
     pad0 = shell->pos[2];
     pad2 = shell->pos[1];
     pad13 = shell->type;
-    if ((pad0 < (f32) gTrackMinZ) || ((f32) gTrackMaxZ < pad0) || (pad1 < (f32) gTrackMinX) ||
-        ((f32) gTrackMaxX < pad1) || (pad2 < (f32) gTrackMinY)) {
+    if ((pad0 < (f32)gTrackMinZ) || ((f32)gTrackMaxZ < pad0) || (pad1 < (f32)gTrackMinX) || ((f32)gTrackMaxX < pad1) || (pad2 < (f32)gTrackMinY)) {
         destroy_destructable_actor((struct Actor*) shell);
     }
 
@@ -356,7 +354,7 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                     shell->targetPlayer = gPlayerPositionLUT[0];
                     shell->state = BLUE_SHELL_LOCK_ON;
                     shell->shellId = 1000.0f;
-                    temp_v0 = gNearestPathPointByPlayerId[player - gPlayerOne] + 8;
+                    temp_v0 = gNearestPathPointByPlayerId[shell->playerId] + 8;
                     if ((s32) gSelectedPathCount < temp_v0) {
                         temp_v0 -= gSelectedPathCount;
                     }
@@ -377,7 +375,7 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                     if (player->currentRank == 0) {
                         shell->state = TRIPLE_GREEN_SHELL;
                         shell->someTimer = 0x0258;
-                        temp_v0 = gNearestPathPointByPlayerId[player - gPlayerOne] + 8;
+                        temp_v0 = gNearestPathPointByPlayerId[shell->playerId] + 8;
                         if ((s32) gSelectedPathCount < temp_v0) {
                             temp_v0 -= gSelectedPathCount;
                         }
@@ -385,7 +383,7 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                     } else if (player->currentRank >= 5) {
                         shell->state = GREEN_SHELL_HIT_A_RACER;
                         shell->shellId = 1000.0f;
-                        temp_v0 = gNearestPathPointByPlayerId[player - gPlayerOne] + 8;
+                        temp_v0 = gNearestPathPointByPlayerId[shell->playerId] + 8;
                         if ((s32) gSelectedPathCount < temp_v0) {
                             temp_v0 -= gSelectedPathCount;
                         }
@@ -398,7 +396,7 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                     }
                 }
             }
-            shell->velocity[1] -= 0.5;
+            shell->velocity[1] -= 0.5f;
             if (shell->velocity[1] < -2.0f) {
                 shell->velocity[1] = -2.0f;
             }
@@ -490,3 +488,4 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
             break;
     }
 }
+
